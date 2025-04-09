@@ -12,6 +12,9 @@ function ShoppingCart() {
 	const [addedProducts, setAddedProducts] = useState([])
 
 	function updateProductQuantity(name, quantity) {
+		if (quantity < 1) {
+			return;
+		}
 		setAddedProducts(curr =>
 			curr.map(prod => prod.name === name ? { ...prod, quantity } : prod)
 		)
@@ -77,9 +80,13 @@ function ShoppingCart() {
 											<div className="product-info">
 												<span>{product.name}</span>
 												<span>{product.price.toFixed(2)}€</span>
-												<span>Quantità: {product.quantity}</span>
+												<div>
+													<button className="add-one-btn" onClick={() => updateProductQuantity(product.name, product.quantity + 1)}>+</button>
+													<span>{product.quantity}</span>
+													<button className="remove-one-btn" onClick={() => updateProductQuantity(product.name, product.quantity - 1)}>-</button>
+												</div>
 											</div>
-											<button className="remove-product-btn" onClick={() => removeFromCart(product)}>-</button>
+											<button className="remove-product-btn" onClick={() => removeFromCart(product)}><i class="fa-solid fa-trash-can"></i></button>
 										</div>
 									))
 								}
