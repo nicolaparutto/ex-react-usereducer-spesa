@@ -1,35 +1,28 @@
-const products = [
-	{ name: 'Mela', price: 0.5 },
-	{ name: 'Pane', price: 1.2 },
-	{ name: 'Latte', price: 1.0 },
-	{ name: 'Pasta', price: 0.7 },
-];
+import { useState } from "react";
 
-import { useReducer } from "react";
 
 function ShoppingCart() {
+	const products = [
+		{ name: 'Mela', price: 0.5 },
+		{ name: 'Pane', price: 1.2 },
+		{ name: 'Latte', price: 1.0 },
+		{ name: 'Pasta', price: 0.7 },
+	];
 
-	const [addedProducts, dispatchAddedProducts] = useReducer(reducer, []);
+	const [addedProducts, setAddedProducts] = useState([])
 
-	function reducer(state, action) {
-		switch (action.type) {
-			case "ADD_PRODUCT":
-				if (state.some(product => product.name === action.pName)) {
-					return state;
-				} else {
-					const productToAdd = {
-						name: action.pName,
-						price: action.pPrice,
-						quantity: action.pQuantity
-					}
-					return [...state, productToAdd];
-				}
-
-			default:
-				return state;
+	function addToCart(product) {
+		if (addedProducts.some(prod => prod.name === product.name)) {
+			return;
 		}
+		const productToAdd = {
+			...product,
+			quantity: 1
+		}
+		setAddedProducts(curr => [...curr, productToAdd])
 	}
 
+	console.log(addedProducts);
 
 	return (
 		<>
@@ -44,9 +37,9 @@ function ShoppingCart() {
 						<div className="product-item" key={index}>
 							<div className="product-info">
 								<span>{product.name}</span>
-								<span>{product.price}€</span>
+								<span>{product.price.toFixed(2)}€</span>
 							</div>
-							<div className="add-product-btn" onClick={() => dispatchAddedProducts({ type: "ADD_PRODUCT", pName: product.name, pPrice: product.price, pQuantity: 1 })}>+</div>
+							<button className="add-product-btn" onClick={() => addToCart(product)}>+</button>
 						</div>
 					))}
 				</div>
@@ -57,13 +50,17 @@ function ShoppingCart() {
 				<div className="products-container">
 					{
 						addedProducts.length > 0 ?
-							addedProducts.map((product, index) => (
-								<div key={index} className="product-item">
-									<span>{product.name}</span>
-									<span>{product.price}€</span>
-									<span>Quantità: {product.quantity}</span>
-								</div>
-							)) :
+							<div>
+								{addedProducts.map((product, index) => (
+									<div key={index} className="product-item">
+										<span>{product.name}</span>
+										<span>{product.price.toFixed(2)}€</span>
+										<span>Quantità: {product.quantity}</span>
+									</div>
+								))}
+								<div>Totale del carrello: </div>
+							</div>
+							:
 							<div>Il tuo carrello è vuoto!</div>
 					}
 				</div>
